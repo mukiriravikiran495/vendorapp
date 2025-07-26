@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 const { width, height } = Dimensions.get('window');
-
 export default function HomeScreen() {
     const [pickup, setPickup] = useState('');
     const [drop, setDrop] = useState('');
@@ -82,7 +81,7 @@ export default function HomeScreen() {
                         longitudeDelta: 0.1,
                     }}
                     customMapStyle={mapStyle}
-                    
+
                 />
                 {/* Floating Pickup Card */}
                 <View style={styles.card}>
@@ -94,7 +93,11 @@ export default function HomeScreen() {
                             placeholderTextColor="#aaa"
                             value={pickup}
                             onChangeText={setPickup}
-                        />
+                        /> 
+                        
+
+
+
                     </View>
                 </View>
             </View>
@@ -301,7 +304,7 @@ const styles = StyleSheet.create({
     whiteBackground: {
         flex: 1,
         backgroundColor: '#E5E4E2',
-        
+
     },
     shiftDateContainer: {
         width: '50%',
@@ -341,5 +344,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#000',
     },
-    
+
 });
