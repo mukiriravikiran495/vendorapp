@@ -21,7 +21,7 @@ export default function Home() {
                         value={isOnline}
                         onValueChange={setIsOnline}
                         trackColor={{ false: '#ccc', true: '#ccc' }}
-                        thumbColor={isOnline ? '#0057ff' : '#ccc'}
+                        thumbColor={isOnline ? '#0C4087' : '#ccc'}
                         style={styles.switch}
                     />
                 </View>

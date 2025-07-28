@@ -4,11 +4,11 @@ import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 export default function DocumentUpload() {
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#0B4ED3',
+    color: '#0C4087',
     marginBottom: 30,
     alignSelf: 'center',
   },
@@ -159,11 +159,11 @@ const styles = StyleSheet.create({
   backgroundColor: '#fff',
   borderRadius: 6,
   borderWidth: 1,
-  borderColor: '#0B4ED3', // blue border
+  borderColor: '#0C4087', // blue border
 },
 
 actionButtonText: {
-  color: '#0B4ED3',        // blue text
+  color: '#0C4087',        // blue text
   fontSize: 14,
   fontWeight: '600',
 },
@@ -175,7 +175,7 @@ actionButtonText: {
     color: '#27ae60',
   },
   submitButton: {
-    backgroundColor: '#0B4ED3',
+    backgroundColor: '#0C4087',
     paddingVertical: 16,
     borderRadius: 8,
     marginTop: 30,

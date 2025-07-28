@@ -156,12 +156,12 @@ const styles = StyleSheet.create({
     },
     backToLogin: {
         fontSize: 14,
-        color: '#115bbf',
+        color: '#0C4087',
         textDecorationLine: 'underline',
         marginBottom: 30,
     },
     verifyButton: {
-        backgroundColor: '#115bbf',
+        backgroundColor: '#0C4087',
         paddingVertical: 16,
         borderRadius: 10,
         width: '100%',

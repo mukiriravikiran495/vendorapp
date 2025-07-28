@@ -1,15 +1,15 @@
 import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import {
-    Dimensions,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function Menu() {
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#0B4ED3',
+    color: '#0C4087',
     marginBottom: 20,
   },
   menuItem: {
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4f4f4',
   },
   activeMenuItem: {
-    backgroundColor: '#0B4ED3',
+    backgroundColor: '#0C4087',
   },
   iconContainer: {
     width: 28,

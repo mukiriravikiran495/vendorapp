@@ -46,7 +46,7 @@ export default function Login() {
                 </View>
 
                 <TouchableOpacity style={styles.altLoginButton}>
-                    <Ionicons name="logo-google" size={20} color="#4285F4" />
+                    <Ionicons name="logo-google" size={20} color="#0C4087" />
                     <Text style={styles.altLoginText}>Continue with Google</Text>
                 </TouchableOpacity>
 
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     logo: {
         fontSize: 32,
         fontWeight: 'bold',
-        color: '#115bbf', // Deep red brand color
+        color: '#0C4087', // Deep red brand color
         marginBottom: 10,
         textAlign: 'center',
     },
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     continueButton: {
-        backgroundColor: '#115bbf', // Light blue from screenshot
+        backgroundColor: '#0C4087', // Light blue from screenshot
         paddingVertical: 14,
         borderRadius: 10,
         width: '100%',
