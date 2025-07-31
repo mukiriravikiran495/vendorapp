@@ -2,19 +2,19 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import {
-    Animated,
-    Dimensions,
-    NativeScrollEvent,
-    NativeSyntheticEvent,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Switch,
-    Text,
-    TouchableOpacity,
-    View,
+  Animated,
+  Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -22,271 +22,271 @@ const { width: screenWidth } = Dimensions.get('window');
 
 
 const orders = [
-    {
-        id: 1,
-        status: 'Upcoming',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
+  {
+    id: 'SH001456324',
+    status: 'Upcoming',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
 
-        dropLocation: 'Madhapur Metro Station, Hyderabad',
-        pickupLocation: 'Kukatpally Metro Station, Hyderabad',
-        type: '1BHK',
-        paymentStatus: 'Paid',
-        customer: {
-            name: 'Ravikiran Mukiri',
-            phone: '7816035340',
-            initials: 'RK',
-        },
-        amount: 15300,
+    dropLocation: 'Madhapur Metro Station, Hyderabad',
+    pickupLocation: 'Kukatpally Metro Station, Hyderabad',
+    type: '1BHK',
+    paymentStatus: 'Paid',
+    customer: {
+      name: 'Ravikiran Mukiri',
+      phone: '7816035340',
+      initials: 'RK',
     },
-    {
-        id: 2,
-        status: 'Ongoing',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
+    amount: 15300,
+  },
+  {
+    id: 'SH001456325',
+    status: 'Ongoing',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
 
-        dropLocation: 'Gachibowli, Hyderabad',
-        pickupLocation: 'Ameerpet, Hyderabad',
-        type: '2BHK',
-        paymentStatus: 'Unpaid',
-        customer: {
-            name: 'Aparna Rao',
-            phone: '9876543210',
-            initials: 'AR',
-        },
-        amount: 18900,
+    dropLocation: 'Gachibowli, Hyderabad',
+    pickupLocation: 'Ameerpet, Hyderabad',
+    type: '2BHK',
+    paymentStatus: 'Unpaid',
+    customer: {
+      name: 'Aparna Rao',
+      phone: '9876543210',
+      initials: 'AR',
     },
-    {
-        id: 3,
-        status: 'Completed',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
-        dropLocation: 'Secunderabad',
-        pickupLocation: 'Banjara Hills',
-        type: '3BHK',
-        paymentStatus: 'Paid',
-        customer: {
-            name: 'Karthik Reddy',
-            phone: '9988776655',
-            initials: 'KR',
-        },
-        amount: 24200,
+    amount: 18900,
+  },
+  {
+    id: 'SH001456326',
+    status: 'Completed',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
+    dropLocation: 'Secunderabad',
+    pickupLocation: 'Banjara Hills',
+    type: '3BHK',
+    paymentStatus: 'Paid',
+    customer: {
+      name: 'Karthik Reddy',
+      phone: '9988776655',
+      initials: 'KR',
     },
-    {
-        id: 4,
-        status: 'Upcoming',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
+    amount: 24200,
+  },
+  {
+    id: 'SH001456327',
+    status: 'Upcoming',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
 
-        dropLocation: 'Madhapur Metro Station, Hyderabad',
-        pickupLocation: 'Kukatpally Metro Station, Hyderabad',
-        type: '1BHK',
-        paymentStatus: 'Paid',
-        customer: {
-            name: 'Ravikiran Mukiri',
-            phone: '7816035340',
-            initials: 'RK',
-        },
-        amount: 15300,
+    dropLocation: 'Madhapur Metro Station, Hyderabad',
+    pickupLocation: 'Kukatpally Metro Station, Hyderabad',
+    type: '1BHK',
+    paymentStatus: 'Unpaid',
+    customer: {
+      name: 'Ravikiran Mukiri',
+      phone: '7816035340',
+      initials: 'RK',
     },
-    {
-        id: 5,
-        status: 'Ongoing',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
+    amount: 15300,
+  },
+  {
+    id: 'SH001456328',
+    status: 'Ongoing',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
 
-        dropLocation: 'Gachibowli, Hyderabad',
-        pickupLocation: 'Ameerpet, Hyderabad',
-        type: '2BHK',
-        paymentStatus: 'Unpaid',
-        customer: {
-            name: 'Aparna Rao',
-            phone: '9876543210',
-            initials: 'AR',
-        },
-        amount: 18900,
+    dropLocation: 'Gachibowli, Hyderabad',
+    pickupLocation: 'Ameerpet, Hyderabad',
+    type: '2BHK',
+    paymentStatus: 'Unpaid',
+    customer: {
+      name: 'Aparna Rao',
+      phone: '9876543210',
+      initials: 'AR',
     },
-    {
-        id: 6,
-        status: 'Completed',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
-        dropLocation: 'Secunderabad',
-        pickupLocation: 'Banjara Hills',
-        type: '3BHK',
-        paymentStatus: 'Paid',
-        customer: {
-            name: 'Karthik Reddy',
-            phone: '9988776655',
-            initials: 'KR',
-        },
-        amount: 24200,
+    amount: 18900,
+  },
+  {
+    id: 'SH001456329',
+    status: 'Completed',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
+    dropLocation: 'Secunderabad',
+    pickupLocation: 'Banjara Hills',
+    type: '3BHK',
+    paymentStatus: 'Paid',
+    customer: {
+      name: 'Karthik Reddy',
+      phone: '9988776655',
+      initials: 'KR',
     },
-    {
-        id: 7,
-        status: 'Ongoing',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
+    amount: 24200,
+  },
+  {
+    id: 'SH001456330',
+    status: 'Ongoing',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
 
-        dropLocation: 'Gachibowli, Hyderabad',
-        pickupLocation: 'Ameerpet, Hyderabad',
-        type: '2BHK',
-        paymentStatus: 'Unpaid',
-        customer: {
-            name: 'Aparna Rao',
-            phone: '9876543210',
-            initials: 'AR',
-        },
-        amount: 18900,
+    dropLocation: 'Gachibowli, Hyderabad',
+    pickupLocation: 'Ameerpet, Hyderabad',
+    type: '2BHK',
+    paymentStatus: 'Unpaid',
+    customer: {
+      name: 'Aparna Rao',
+      phone: '9876543210',
+      initials: 'AR',
     },
-    {
-        id: 8,
-        status: 'Completed',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
-        dropLocation: 'Secunderabad',
-        pickupLocation: 'Banjara Hills',
-        type: '3BHK',
-        paymentStatus: 'Paid',
-        customer: {
-            name: 'Karthik Reddy',
-            phone: '9988776655',
-            initials: 'KR',
-        },
-        amount: 24200,
+    amount: 18900,
+  },
+  {
+    id: 'SH001456331',
+    status: 'Completed',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
+    dropLocation: 'Secunderabad',
+    pickupLocation: 'Banjara Hills',
+    type: '3BHK',
+    paymentStatus: 'Paid',
+    customer: {
+      name: 'Karthik Reddy',
+      phone: '9988776655',
+      initials: 'KR',
     },
-    {
-        id: 9,
-        status: 'Ongoing',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
+    amount: 24200,
+  },
+  {
+    id: 'SH001456332',
+    status: 'Ongoing',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
 
-        dropLocation: 'Gachibowli, Hyderabad',
-        pickupLocation: 'Ameerpet, Hyderabad',
-        type: '2BHK',
-        paymentStatus: 'Unpaid',
-        customer: {
-            name: 'Aparna Rao',
-            phone: '9876543210',
-            initials: 'AR',
-        },
-        amount: 18900,
+    dropLocation: 'Gachibowli, Hyderabad',
+    pickupLocation: 'Ameerpet, Hyderabad',
+    type: '2BHK',
+    paymentStatus: 'Unpaid',
+    customer: {
+      name: 'Aparna Rao',
+      phone: '9876543210',
+      initials: 'AR',
     },
-    {
-        id: 10,
-        status: 'Completed',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
-        dropLocation: 'Secunderabad',
-        pickupLocation: 'Banjara Hills',
-        type: '3BHK',
-        paymentStatus: 'Paid',
-        customer: {
-            name: 'Karthik Reddy',
-            phone: '9988776655',
-            initials: 'KR',
-        },
-        amount: 24200,
+    amount: 18900,
+  },
+  {
+    id: 'SH001456333',
+    status: 'Completed',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
+    dropLocation: 'Secunderabad',
+    pickupLocation: 'Banjara Hills',
+    type: '3BHK',
+    paymentStatus: 'Paid',
+    customer: {
+      name: 'Karthik Reddy',
+      phone: '9988776655',
+      initials: 'KR',
     },
-    {
-        id: 11,
-        status: 'Ongoing',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
+    amount: 24200,
+  },
+  {
+    id: 'SH001456334',
+    status: 'Ongoing',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
 
-        dropLocation: 'Gachibowli, Hyderabad',
-        pickupLocation: 'Ameerpet, Hyderabad',
-        type: '2BHK',
-        paymentStatus: 'Unpaid',
-        customer: {
-            name: 'Aparna Rao',
-            phone: '9876543210',
-            initials: 'AR',
-        },
-        amount: 18900,
+    dropLocation: 'Gachibowli, Hyderabad',
+    pickupLocation: 'Ameerpet, Hyderabad',
+    type: '2BHK',
+    paymentStatus: 'Unpaid',
+    customer: {
+      name: 'Aparna Rao',
+      phone: '9876543210',
+      initials: 'AR',
     },
-    {
-        id: 12,
-        status: 'Completed',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
-        dropLocation: 'Secunderabad',
-        pickupLocation: 'Banjara Hills',
-        type: '3BHK',
-        paymentStatus: 'Paid',
-        customer: {
-            name: 'Karthik Reddy',
-            phone: '9988776655',
-            initials: 'KR',
-        },
-        amount: 24200,
+    amount: 18900,
+  },
+  {
+    id: 'SH001456335',
+    status: 'Completed',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
+    dropLocation: 'Secunderabad',
+    pickupLocation: 'Banjara Hills',
+    type: '3BHK',
+    paymentStatus: 'Paid',
+    customer: {
+      name: 'Karthik Reddy',
+      phone: '9988776655',
+      initials: 'KR',
     },
-    {
-        id: 13,
-        status: 'Ongoing',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
+    amount: 24200,
+  },
+  {
+    id: 'SH001456336',
+    status: 'Ongoing',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
 
-        dropLocation: 'Gachibowli, Hyderabad',
-        pickupLocation: 'Ameerpet, Hyderabad',
-        type: '2BHK',
-        paymentStatus: 'Unpaid',
-        customer: {
-            name: 'Aparna Rao',
-            phone: '9876543210',
-            initials: 'AR',
-        },
-        amount: 18900,
+    dropLocation: 'Gachibowli, Hyderabad',
+    pickupLocation: 'Ameerpet, Hyderabad',
+    type: '2BHK',
+    paymentStatus: 'Unpaid',
+    customer: {
+      name: 'Aparna Rao',
+      phone: '9876543210',
+      initials: 'AR',
     },
-    {
-        id: 14,
-        status: 'Completed',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
-        dropLocation: 'Secunderabad',
-        pickupLocation: 'Banjara Hills',
-        type: '3BHK',
-        paymentStatus: 'Paid',
-        customer: {
-            name: 'Karthik Reddy',
-            phone: '9988776655',
-            initials: 'KR',
-        },
-        amount: 24200,
+    amount: 18900,
+  },
+  {
+    id: 'SH001456337',
+    status: 'Completed',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
+    dropLocation: 'Secunderabad',
+    pickupLocation: 'Banjara Hills',
+    type: '3BHK',
+    paymentStatus: 'Paid',
+    customer: {
+      name: 'Karthik Reddy',
+      phone: '9988776655',
+      initials: 'KR',
     },
-    {
-        id: 15,
-        status: 'Ongoing',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
+    amount: 24200,
+  },
+  {
+    id: 'SH001456338',
+    status: 'Ongoing',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
 
-        dropLocation: 'Gachibowli, Hyderabad',
-        pickupLocation: 'Ameerpet, Hyderabad',
-        type: '2BHK',
-        paymentStatus: 'Unpaid',
-        customer: {
-            name: 'Aparna Rao',
-            phone: '9876543210',
-            initials: 'AR',
-        },
-        amount: 18900,
+    dropLocation: 'Gachibowli, Hyderabad',
+    pickupLocation: 'Ameerpet, Hyderabad',
+    type: '2BHK',
+    paymentStatus: 'Unpaid',
+    customer: {
+      name: 'Aparna Rao',
+      phone: '9876543210',
+      initials: 'AR',
     },
-    {
-        id: 16,
-        status: 'Completed',
-        pickupdate: 'Jul 20, 2025',
-        dropdate: 'Jul 21, 2025',
-        dropLocation: 'Secunderabad',
-        pickupLocation: 'Banjara Hills',
-        type: '3BHK',
-        paymentStatus: 'Paid',
-        customer: {
-            name: 'Karthik Reddy',
-            phone: '9988776655',
-            initials: 'KR',
-        },
-        amount: 24200,
+    amount: 18900,
+  },
+  {
+    id: 'SH001456339',
+    status: 'Completed',
+    pickupdate: 'Jul 20, 2025',
+    dropdate: 'Jul 21, 2025',
+    dropLocation: 'Secunderabad',
+    pickupLocation: 'Banjara Hills',
+    type: '3BHK',
+    paymentStatus: 'Paid',
+    customer: {
+      name: 'Karthik Reddy',
+      phone: '9988776655',
+      initials: 'KR',
     },
+    amount: 24200,
+  },
 
 ];
 
@@ -322,7 +322,7 @@ export default function Bookings() {
             thumbColor="#fff"
           />
         </View>
-        <TouchableOpacity onPress={() => {}} style={styles.notificationIcon}>
+        <TouchableOpacity onPress={() => { }} style={styles.notificationIcon}>
           <Ionicons name="notifications-outline" size={24} color="#0C4087" />
         </TouchableOpacity>
       </View>
@@ -369,43 +369,52 @@ export default function Bookings() {
             showsVerticalScrollIndicator={false}
           >
             {filteredOrdersByTab(tabLabel).map((order) => (
-              <TouchableOpacity key={order.id} activeOpacity={0.9}>
+              <TouchableOpacity key={order.id} activeOpacity={1} onPress={() => router.push(`/bookingdetails`)}>
                 <View style={styles.card}>
-                  <View style={styles.dateRow}>
-                    <View style={styles.dateLeft}>
-                      <MaterialCommunityIcons name="home-city" size={28} color="#BA1C1C" />
-                      <Text style={styles.dateText}>{order.pickupdate}</Text>
-                    </View>
-                    <Text style={styles.dots}>...</Text>
-                    <Text style={styles.dateText}>{order.dropdate}</Text>
+                  {/* Booking ID */}
+                  <Text style={styles.bookingId}>Booking Id: {order.id}</Text>
+
+                  {/* Customer Info */}
+                  <View style={styles.customerRow}>
+                    <Text style={styles.customerName}>{order.customer.name}</Text>
+                    <Text style={styles.customerPhone}> | {order.customer.phone}</Text>
                   </View>
-                  <View style={styles.locationInfo}>
-                    <View style={styles.bulletPoint} />
-                    <Text style={styles.locationText}>{order.dropLocation}</Text>
-                  </View>
-                  <View style={styles.locationInfo}>
-                    <View style={[styles.bulletPoint, { backgroundColor: 'green' }]} />
+
+                  {/* Locations */}
+                  <View style={styles.row}>
+                    <MaterialCommunityIcons name="arrow-up-bold-circle" size={18} color="#4CAF50" />
+                    <Text style={styles.locationLabel}>Pickup: </Text>
                     <Text style={styles.locationText}>{order.pickupLocation}</Text>
                   </View>
-                  <View style={styles.statusRow}>
-                    <Text style={styles.statusTextBold}>Booking {order.status}</Text>
-                    <Text style={styles.statusTextBold}>{order.type}</Text>
-                    <Text style={styles.unpaid}>{order.paymentStatus}</Text>
+
+                  <View style={styles.row}>
+                    <MaterialCommunityIcons name="arrow-down-bold-circle" size={18} color="#BA1C1C" />
+                    <Text style={styles.locationLabel}>Drop: </Text>
+                    <Text style={styles.locationText}>{order.dropLocation}</Text>
                   </View>
-                  <View style={styles.userInfo}>
-                    <View style={styles.avatar}>
-                      <Text style={styles.avatarText}>{order.customer.initials}</Text>
-                    </View>
+
+                  {/* Dates + Type + Payment */}
+                  <View style={styles.detailsRow}>
                     <View>
-                      <Text style={styles.userName}>{order.customer.name}</Text>
-                      <Text style={styles.userPhone}>{order.customer.phone}</Text>
+                      <Text style={styles.dateText}>
+                        {order.pickupdate} ➜ {order.dropdate}
+                      </Text>
+                      <Text style={styles.typeText}>{order.type} Move</Text>
                     </View>
-                    <View style={{ marginLeft: 'auto', alignItems: 'flex-end' }}>
-                      <Text style={styles.totalLabel}>Total Amount</Text>
+                    <View style={styles.paymentBox}>
+                      <Text
+                        style={[
+                          styles.paymentStatus,
+                          { color: order.paymentStatus === 'Paid' ? '#4CAF50' : '#D32F2F' },
+                        ]}
+                      >
+                        {order.paymentStatus}
+                      </Text>
                       <Text style={styles.totalAmount}>₹ {order.amount}</Text>
                     </View>
                   </View>
                 </View>
+
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -519,11 +528,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
   },
-  totalAmount: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#0C4087',
-  },
+  // totalAmount: {
+  //   fontSize: 16,
+  //   fontWeight: 'bold',
+  //   color: '#0C4087',
+  // },
   tabs: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -559,22 +568,102 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  dateText: {
-    flexShrink: 1,
-    minWidth: 80,
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginLeft: 8,
-    color: '#000000',
-  },
+  // dateText: {
+  //   flexShrink: 1,
+  //   minWidth: 80,
+  //   fontSize: 14,
+  //   fontWeight: 'bold',
+  //   marginLeft: 8,
+  //   color: '#000000',
+  // },
   dots: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
   },
-  locationText: {
-    flex: 1,
+  // locationText: {
+  //   flex: 1,
+  //   fontSize: 13,
+  //   color: '#333',
+  // },
+  bookingId: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#0C4087',
+    marginBottom: 6,
+  },
+
+  customerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+
+  customerName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+  },
+
+  customerPhone: {
+    fontSize: 14,
+    color: '#555',
+  },
+
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+
+  locationLabel: {
     fontSize: 13,
+    fontWeight: '600',
+    marginLeft: 6,
     color: '#333',
   },
+
+  locationText: {
+    fontSize: 13,
+    color: '#444',
+    flexShrink: 1,
+    marginLeft: 4,
+  },
+
+  detailsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+
+  dateText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+
+  typeText: {
+    fontSize: 14,
+    color: '#444',
+    fontWeight: '500',
+  },
+
+  paymentBox: {
+    alignItems: 'flex-end',
+  },
+
+  paymentStatus: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+
+  totalAmount: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#4bc373',
+  },
+
 });
