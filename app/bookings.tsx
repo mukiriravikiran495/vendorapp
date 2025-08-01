@@ -16,7 +16,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { setOnlineStatus } from '../redux/slices/onlineSlice';
+import { RootState } from '../redux/store';
 
+const { width } = Dimensions.get('window');
 const { width: screenWidth } = Dimensions.get('window');
 
 
@@ -292,12 +296,14 @@ const orders = [
 
 export default function Bookings() {
   const router = useRouter();
-  const [isOnline, setIsOnline] = useState(false);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const scrollRef = useRef<ScrollView>(null);
   const tabLabels = ['Upcoming', 'Ongoing', 'Completed'] as const;
   type BookingStatus = typeof tabLabels[number];
+
+  const dispatch = useDispatch();
+  const isOnline = useSelector((state: RootState) => state.online.isOnline);
 
   const handleTabPress = (index: number) => {
     setActiveTabIndex(index);
@@ -311,19 +317,34 @@ export default function Bookings() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#0C4087" />
+          <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <View style={styles.toggleContainer}>
-          <Text style={styles.statusText}>{isOnline ? 'Online' : 'Offline'}</Text>
+        <View style={[
+          styles.toggleContainer,
+          {
+            backgroundColor: isOnline ? '#e3e4e6' : '#e6e6e6',
+            borderColor: isOnline ? '#4bc373' : '#d6dce4ff',
+            borderWidth: 0.8,
+          }
+        ]}>
+          <Text style={[
+            styles.statusText,
+            { color: isOnline ? '#4bc373' : '#555', fontWeight: '500' }
+          ]}>
+            {isOnline ? 'ON LINE' : 'OFF LINE'}
+          </Text>
+
           <Switch
             value={isOnline}
-            onValueChange={setIsOnline}
-            trackColor={{ false: '#ccc', true: '#0C4087' }}
-            thumbColor="#fff"
+            onValueChange={(value) => {
+              dispatch(setOnlineStatus(value)); // ✅ fixed
+            }}
+            trackColor={{ false: '#ccc', true: '#4bc373' }}
+            thumbColor={isOnline ? '#4bc373' : '#e5eae7ff'}
           />
         </View>
         <TouchableOpacity onPress={() => { }} style={styles.notificationIcon}>
-          <Ionicons name="notifications-outline" size={24} color="#0C4087" />
+          <Ionicons name="notifications-outline" size={24} color="#000" />
         </TouchableOpacity>
       </View>
 
@@ -441,17 +462,17 @@ const styles = StyleSheet.create({
   toggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#e6e6e6',
-    paddingHorizontal: 10,
+    backgroundColor: '#4bc373',
+    paddingHorizontal: 12,
     paddingVertical: 2,
-    borderRadius: 10,
-    height: 32,
+    borderRadius: 24,
+    height: 38,
+
   },
   statusText: {
     marginRight: 8,
-    fontSize: 16,
-    color: '#0C4087',
-    fontWeight: '500',
+    fontSize: width * 0.045,
+    color: '#555',
   },
   notificationIcon: {
     paddingLeft: 10,
@@ -543,7 +564,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabText: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#000',
     fontWeight: '500',
     marginBottom: 4,
@@ -590,7 +611,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#0C4087',
-    marginBottom: 6,
+    marginBottom: 10,
   },
 
   customerRow: {
@@ -663,7 +684,7 @@ const styles = StyleSheet.create({
   totalAmount: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#4bc373',
+    color: 'green',
   },
 
 });

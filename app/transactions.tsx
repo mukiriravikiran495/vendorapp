@@ -9,16 +9,16 @@ import {
     Switch,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOnlineStatus } from '../redux/slices/onlineSlice';
 import { RootState } from '../redux/store';
+
 const { width } = Dimensions.get('window');
 
-export default function faq() {
+export default function Transactions() {
     const router = useRouter();
-    
     const dispatch = useDispatch();
     const isOnline = useSelector((state: RootState) => state.online.isOnline);
 

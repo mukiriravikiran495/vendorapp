@@ -1,4 +1,5 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -6,6 +7,7 @@ import {
   FlatList,
   Image,
   Modal,
+  PanResponder,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -15,10 +17,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-
-
-const screenWidth = Dimensions.get('window').width;
-
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SLIDE_WIDTH = SCREEN_WIDTH - 64;
+const THUMB_SIZE = 50;
 const { width, height } = Dimensions.get('window');
 const electronics = [
   {
@@ -91,6 +92,107 @@ export default function BookingDetails() {
   const [confirmPopupVisible, setConfirmPopupVisible] = useState(false);
   const [showCancelPopup, setShowCancelPopup] = useState(false);
 
+  const nudgeAnim = useRef(new Animated.Value(0)).current;
+  const translateX = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(1)).current;
+  const textOpacity = translateX.interpolate({
+    inputRange: [0, SLIDE_WIDTH / 2],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+  const bgFill = translateX.interpolate({
+    inputRange: [0, SLIDE_WIDTH - THUMB_SIZE],
+    outputRange: ['#34dc6f', '#03792c'],
+    extrapolate: 'clamp',
+  });
+
+  const [confirmed, setConfirmed] = useState(false);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => !confirmed,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dx >= 0 && gestureState.dx <= SLIDE_WIDTH - THUMB_SIZE) {
+          translateX.setValue(gestureState.dx);
+          scale.setValue(1.05);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dx > SLIDE_WIDTH - THUMB_SIZE - 20) {
+          Animated.parallel([
+            Animated.timing(translateX, {
+              toValue: SLIDE_WIDTH - THUMB_SIZE,
+              duration: 200,
+              useNativeDriver: false,
+            }),
+            Animated.spring(scale, {
+              toValue: 1,
+              useNativeDriver: false,
+            }),
+          ]).start(() => {
+            setConfirmed(true);
+            // Alert.alert('Booking Accepted', `Booking ID: ${booking.id} has been accepted.`);
+            // Alert.alert('Booking Accepted', `Booking ID: has been accepted.`);
+            setTimeout(() => {
+              router.back();
+            }, 1); // 1 second delay after confirmation
+
+          });
+        } else {
+          Animated.parallel([
+            Animated.spring(translateX, {
+              toValue: 0,
+              useNativeDriver: false,
+            }),
+            Animated.spring(scale, {
+              toValue: 1,
+              useNativeDriver: false,
+            }),
+          ]).start();
+        }
+      },
+    })
+  ).current;
+
+  useEffect(() => {
+    if (!confirmed) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(nudgeAnim, {
+            toValue: 10,
+            duration: 500,
+            useNativeDriver: false,
+          }),
+          Animated.timing(nudgeAnim, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: false,
+          }),
+        ])
+      ).start();
+    }
+  }, [confirmed]);
+
+  const order = [
+    {
+      id: 'SH001456324',
+      status: 'Upcoming',
+      pickupdate: 'Jul 20, 2025',
+      dropdate: 'Jul 21, 2025',
+
+      dropLocation: 'Madhapur Metro Station, Hyderabad',
+      pickupLocation: 'Kukatpally Metro Station, Hyderabad',
+      type: '1BHK',
+      paymentStatus: 'Paid',
+      customer: {
+        name: 'Ravikiran Mukiri',
+        phone: '7816035340',
+        initials: 'RK',
+      },
+      amount: 15300,
+    },
+  ];
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
       <SafeAreaView style={styles.container}>
@@ -102,301 +204,10 @@ export default function BookingDetails() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={26} color="#000" />
           </TouchableOpacity>
-          {/* <MaterialCommunityIcons name="check-decagram" size={60} color="#16a34a" />
-                    <FontAwesome5 name="shield-alt" size={50} color="#10b981" />
-                    <Ionicons name="checkmark-done-circle-sharp" size={60} color="#059669" /> */}
-
-          <View style={{
-            backgroundColor: '#d1fae5',
-            padding: 20,
-            // borderRadius: 100,
-            shadowColor: '#16a34a',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.4,
-            shadowRadius: 10,
-            elevation: 10,
-            alignItems: 'center',
-            width: '100%',
-          }}>
-            <MaterialCommunityIcons name="check-decagram" size={60} color="#16a34a" />
-            <Text style={styles.sectionTitle}>Booking Confirmed!</Text>
-            <Text style={styles.messageTitle}>Your move has been successfully scheduled</Text>
-          </View>
-
-        </View>
-
-
-
-        {/* Booking Details */}
-        <View style={styles.bookingCard}>
-
-          <Text style={styles.bookingTitle}>Booking Id : SH0076124534</Text>
-          <View style={styles.bookingRow}>
-            <Image
-              source={{ uri: 'https://img.icons8.com/emoji/48/house-emoji.png' }}
-              style={styles.icon}
-            />
-            <Text style={styles.dateText}>Jan 21, 09:26 PM</Text>
-            {/* <Ionicons name="ellipsis-horizontal" size={20} color="#000" style={{ marginHorizontal: 5 }} /> */}
-            <Text style={styles.dateText}>Jan 22, 09:26 PM</Text>
-          </View>
-
-          {/* Address Rows */}
-          <View style={styles.addressRow}>
-            <Ionicons name="radio-button-on" size={16} color="green" style={{ marginRight: 8 }} />
-            <Text style={styles.addressText} numberOfLines={2}>
-              Near Victoria Memorial Metro Station, Metro Pillar No. 1634, Green Hills Colony, Main Road, Kothapet, Hyderabad, Telangana 500035
-            </Text>
-          </View>
-
-          <View style={styles.addressRow}>
-            <Ionicons name="radio-button-on" size={16} color="red" style={{ marginRight: 8 }} />
-            <Text style={styles.addressText} numberOfLines={2}>
-              Near Victoria Memorial Metro Station, Metro Pillar No. 1634, Green Hills Colony, Main Road, Kothapet, Hyderabad, Telangana 500035
-            </Text>
-          </View>
-
-          {/* House type + Button */}
-          <View style={styles.houseRow}>
-            <Text style={styles.houseType}>House One BHK</Text>
-
-
-            <>
-              {/* Button to open modal */}
-              <TouchableOpacity onPress={() => setShowModal(true)} style={styles.viewBtn}>
-                <Text style={styles.viewBtnText}>VIEW ITEMS</Text>
-              </TouchableOpacity>
-
-              {/* MODAL */}
-              <Modal visible={showModal} animationType="slide" transparent={true}>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000aa' }}>
-                  <View style={{ width: '90%', height: '80%', backgroundColor: '#fff', borderRadius: 10, padding: 10 }}>
-
-                    <TouchableOpacity
-                      onPress={() => {
-                        setShowModal(false);
-                        router.push('/');
-                      }}
-                      style={{ marginTop: 10, marginBottom: 10 }}
-                    >
-                      <Text style={{ color: '#ba1c1c', textAlign: 'right', textDecorationLine: 'underline', fontWeight: '500' }}>
-                        + Add items
-                      </Text>
-                    </TouchableOpacity>
-
-                    {/* Constrain FlatList height to avoid overflow */}
-                    <View style={{ flex: 1 }}>
-                      <FlatList
-                        data={electronics}
-                        keyExtractor={(item) => item.id.toString()}
-                        numColumns={2}
-                        showsVerticalScrollIndicator={false}
-                        contentContainerStyle={{
-                          paddingHorizontal: 5,
-                          paddingBottom: 20,
-                        }}
-                        columnWrapperStyle={{
-                          justifyContent: 'center',
-                          marginBottom: 15,
-                        }}
-                        renderItem={({ item }) => (
-                          <View
-                            style={{
-                              width: width / 3.8, // slightly reduced to fit inside modal
-                              backgroundColor: '#fff',
-                              borderRadius: 10,
-                              alignItems: 'center',
-                              elevation: 2,
-                              padding: 5,
-                              margin: 5, // use margin instead of marginHorizontal
-                            }}
-                          >
-                            <Image
-                              source={{ uri: item.image }}
-                              style={{ width: 80, height: 80, borderRadius: 5 }}
-                            />
-                            <Text style={{ fontSize: 12, marginVertical: 4 }}>{item.name}</Text>
-                            <TouchableOpacity
-                              style={{
-                                backgroundColor: '#ba1c1c',
-                                paddingVertical: 5,
-                                paddingHorizontal: 10,
-                                borderRadius: 5,
-                              }}
-                            >
-                              <Text style={{ color: '#fff', fontSize: 12 }}>ADD</Text>
-                            </TouchableOpacity>
-                          </View>
-                        )}
-                      />
-
-                    </View>
-
-                    {/* Buttons */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                      <TouchableOpacity
-                        style={{
-                          width: 120,
-                          backgroundColor: '#ba1c1c',
-                          padding: 12,
-                          borderRadius: 5,
-                          marginHorizontal: 8,
-                        }}
-                        onPress={() => setShowModal(false)}
-                      >
-                        <Text style={{ textAlign: 'center', color: '#fff' }}>Done</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        style={{
-                          width: 120,
-                          backgroundColor: '#BA1C1C',
-                          padding: 12,
-                          borderRadius: 5,
-                          marginHorizontal: 8,
-                        }}
-                        onPress={() => setShowModal(false)}
-                      >
-                        <Text style={{ textAlign: 'center', color: '#fff' }}>Cancel</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              </Modal>
-            </>
-          </View>
-        </View>
-
-        {/* Booking Progress Timeline */}
-        <View style={styles.timelineContainer}>
-          {[
-            { label: 'Booking placed on', date: 'Jan 21, 09:26 PM', completed: true },
-            { label: 'Pickup Completed', date: 'Jan 21, 09:26 PM', completed: true },
-            { label: 'Drop Completed', date: 'Jan 21, 09:26 PM', completed: false },
-          ].map((item, index, array) => {
-            const animatedHeight = useRef(new Animated.Value(0)).current;
-
-            useEffect(() => {
-              if (index !== 0 && array[index - 1].completed) {
-                Animated.timing(animatedHeight, {
-                  toValue: 30,
-                  duration: 600,
-                  useNativeDriver: false,
-                }).start();
-              }
-            }, []);
-
-            return (
-              <View key={index} style={styles.timelineItem}>
-                {/* Animated vertical line */}
-                {index !== 0 && (
-                  <Animated.View
-                    style={[
-                      styles.timelineLine,
-                      {
-                        height: animatedHeight,
-                        backgroundColor: array[index - 1].completed ? '#28a745' : '#ccc',
-                      },
-                    ]}
-                  />
-                )}
-
-                {/* Dot */}
-                <View
-                  style={[
-                    styles.timelineDot,
-                    {
-                      backgroundColor: item.completed ? '#28a745' : '#ccc',
-                      borderColor: item.completed ? '#28a745' : '#ccc',
-                    },
-                  ]}
-                />
-
-                {/* Text */}
-                <View style={styles.timelineContent}>
-                  <Text style={styles.timelineLabel}>{item.label}</Text>
-                  <Text style={styles.timelineDate}>{item.date}</Text>
-                </View>
-              </View>
-            );
-          })}
-        </View>
-
-
-
-        {/* View All Coupons Button */}
-        <TouchableOpacity style={styles.couponButton} >
-          <View style={styles.couponLeft}>
-            <Image
-              source={{ uri: 'https://img.icons8.com/color/48/discount--v1.png' }}
-              style={styles.couponIcon}
-            />
-            <Text style={styles.couponText}>Used Coupon</Text>
-          </View>
-          {/* <Ionicons style={styles.couponArrow} name="chevron-forward" size={20} color="#000" /> */}
-          <Text style={styles.couponArrow}>WELCOME</Text>
-        </TouchableOpacity>
-
-        {/* Saving */}
-        <TouchableOpacity style={styles.couponButton} onPress={() => { }}>
-          <View style={styles.couponLeft}>
-
-            <Text style={styles.totalSaving}>Your Total Saving</Text>
-          </View>
-          <Text style={styles.savedAmount}>1200</Text>
-        </TouchableOpacity>
-
-        {/* Price Breakdown Section */}
-        <View style={styles.priceCard}>
-          <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Base Price</Text>
-            <Text style={styles.priceValue}>10,000</Text>
-          </View>
-          <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Install Uninstall</Text>
-            <Text style={styles.priceValue}>10,000</Text>
-          </View>
-          <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Wrapping Charges</Text>
-            <Text style={styles.priceValue}>FREE</Text>
-          </View>
-          <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>labour Charges</Text>
-            <Text style={styles.priceValue}>FREE</Text>
-          </View>
-          <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>GST (18%)</Text>
-            <Text style={styles.priceValue}>1,800</Text>
-          </View>
-          <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Discount</Text>
-            <Text style={styles.discountValue}>-₹600</Text>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.priceRow}>
-            <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>₹11,200</Text>
-          </View>
-        </View>
-
-        {/* Vendor details  */}
-        <View style={styles.customerBox}>
-          <Text style={styles.sectionTitle}>Packers & Movers Details</Text>
-          <View style={styles.companyRow}>
-
-            <View style={styles.headerInfo}>
-              <Text style={styles.companyName}>Leo Packers and Movers</Text>
-              <Text style={styles.address}>Hyderabad, Telangana</Text>
-              <Text style={styles.rating}>Rating 4+</Text>
-            </View>
-
-            <View style={styles.imageBox}>
-              <View style={styles.placeholderImage} />
-            </View>
-          </View>
         </View>
 
         {/* Customer Details */}
+
         <View style={styles.customerBox}>
           <Text style={styles.sectionTitle}>Customer Details</Text>
           <View style={styles.companyRow}>
@@ -412,12 +223,258 @@ export default function BookingDetails() {
           </View>
         </View>
 
-        
+
+        {/* Booking Details */}
+        <View style={styles.bookingCard}>
+
+          <View style={styles.card}>
+            {/* Booking ID */}
+            <Text style={styles.bookingId}>Booking Id: SH000163524</Text>
+
+            {/* Customer Info */}
+            {/* <View style={styles.customerRow}>
+              <Text style={styles.customerName}>Mukiri Ravi kiran</Text>
+              <Text style={styles.customerPhone}> | 7816035340</Text>
+            </View> */}
+
+            {/* Locations */}
+            <View style={styles.row}>
+              <MaterialCommunityIcons name="arrow-up-bold-circle" size={18} color="#4CAF50" />
+              <Text style={styles.locationLabel}>Pickup: </Text>
+              <Text style={styles.locationText}>ECIL, Hyderabad, 523001</Text>
+            </View>
+
+            <View style={styles.row}>
+              <MaterialCommunityIcons name="arrow-down-bold-circle" size={18} color="#BA1C1C" />
+              <Text style={styles.locationLabel}>Drop: </Text>
+              <Text style={styles.locationText}>Kukatpally, Hyderabad, 500062</Text>
+            </View>
+
+            {/* Dates + Type + Payment */}
+            <View style={styles.detailsRow}>
+              <View>
+                <Text style={styles.dateText}>
+                  22 Jul 2025 ➜ 24 Jul 2025
+                </Text>
+                <Text style={styles.typeText}>ONE BHK Move</Text>
+              </View>
+
+            </View>
+          </View>
 
 
+          <>
+            {/* Button to open modal */}
+            <TouchableOpacity onPress={() => setShowModal(true)} style={styles.viewBtn}>
+              <Text style={styles.viewBtnText}>VIEW ITEMS</Text>
+            </TouchableOpacity>
+
+            {/* MODAL */}
+            <Modal visible={showModal} animationType="slide" transparent={true}>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000aa' }}>
+                <View style={{ width: '90%', height: '80%', backgroundColor: '#fff', borderRadius: 10, padding: 10 }}>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      setShowModal(false);
+                      router.push('/');
+                    }}
+                    style={{ marginTop: 10, marginBottom: 10 }}
+                  >
+                    <Text style={{ color: '#ba1c1c', textAlign: 'right', textDecorationLine: 'underline', fontWeight: '500' }}>
+                      + Add items
+                    </Text>
+                  </TouchableOpacity>
+
+                  {/* Constrain FlatList height to avoid overflow */}
+                  <View style={{ flex: 1 }}>
+                    <FlatList
+                      data={electronics}
+                      keyExtractor={(item) => item.id.toString()}
+                      numColumns={2}
+                      showsVerticalScrollIndicator={false}
+                      contentContainerStyle={{
+                        paddingHorizontal: 5,
+                        paddingBottom: 20,
+                      }}
+                      columnWrapperStyle={{
+                        justifyContent: 'center',
+                        marginBottom: 15,
+                      }}
+                      renderItem={({ item }) => (
+                        <View
+                          style={{
+                            width: width / 3.8, // slightly reduced to fit inside modal
+                            backgroundColor: '#fff',
+                            borderRadius: 10,
+                            alignItems: 'center',
+                            elevation: 2,
+                            padding: 5,
+                            margin: 5, // use margin instead of marginHorizontal
+                          }}
+                        >
+                          <Image
+                            source={{ uri: item.image }}
+                            style={{ width: 80, height: 80, borderRadius: 5 }}
+                          />
+                          <Text style={{ fontSize: 12, marginVertical: 4 }}>{item.name}</Text>
+                          <TouchableOpacity
+                            style={{
+                              backgroundColor: '#ba1c1c',
+                              paddingVertical: 5,
+                              paddingHorizontal: 10,
+                              borderRadius: 5,
+                            }}
+                          >
+                            <Text style={{ color: '#fff', fontSize: 12 }}>ADD</Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                    />
+
+                  </View>
+
+                  {/* Buttons */}
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+                    <TouchableOpacity
+                      style={{
+                        width: 120,
+                        backgroundColor: '#ba1c1c',
+                        padding: 12,
+                        borderRadius: 5,
+                        marginHorizontal: 8,
+                      }}
+                      onPress={() => setShowModal(false)}
+                    >
+                      <Text style={{ textAlign: 'center', color: '#fff' }}>Done</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={{
+                        width: 120,
+                        backgroundColor: '#BA1C1C',
+                        padding: 12,
+                        borderRadius: 5,
+                        marginHorizontal: 8,
+                      }}
+                      onPress={() => setShowModal(false)}
+                    >
+                      <Text style={{ textAlign: 'center', color: '#fff' }}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+          </>
+        </View>
+
+        {/* Price Breakdown Section */}
+        <View style={styles.priceCard}>
+          <View style={styles.divider} />
+          <View style={styles.priceRow}>
+            <Text style={styles.totalLabel}>Booking Amount</Text>
+            <Text style={styles.totalValue}>₹11,200</Text>
+          </View>
+        </View>
+
+        {/* Booking Progress Timeline */}
+        <View
+          style={{
+            backgroundColor: '#fff',
+
+            borderColor: '#ccc',
+
+            padding: 16,
+
+            top: 8,
+          }}
+        >
+          <View style={styles.timelineContainer}>
+            {[
+              { label: 'Booking placed on', date: 'Jan 21, 09:26 PM', completed: true },
+              { label: 'Pickup Completed', date: 'Jan 21, 09:26 PM', completed: true },
+              { label: 'Drop Completed', date: 'Jan 21, 09:26 PM', completed: false },
+            ].map((item, index, array) => {
+              const animatedHeight = useRef(new Animated.Value(0)).current;
+
+              useEffect(() => {
+                if (index !== 0 && array[index - 1].completed) {
+                  Animated.timing(animatedHeight, {
+                    toValue: 30,
+                    duration: 600,
+                    useNativeDriver: false,
+                  }).start();
+                }
+              }, []);
+
+              return (
+                <View key={index} style={styles.timelineItem}>
+                  {/* Animated vertical line */}
+                  {index !== 0 && (
+                    <Animated.View
+                      style={[
+                        styles.timelineLine,
+                        {
+                          height: animatedHeight,
+                          backgroundColor: array[index - 1].completed ? '#28a745' : '#ccc',
+                        },
+                      ]}
+                    />
+                  )}
+
+                  {/* Dot */}
+                  <View
+                    style={[
+                      styles.timelineDot,
+                      {
+                        backgroundColor: item.completed ? '#28a745' : '#ccc',
+                        borderColor: item.completed ? '#28a745' : '#ccc',
+                      },
+                    ]}
+                  />
+
+                  {/* Text */}
+                  <View style={styles.timelineContent}>
+                    <Text style={styles.timelineLabel}>{item.label}</Text>
+                    <Text style={styles.timelineDate}>{item.date}</Text>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+
+
+
+        <View style={styles.AcceptContainer}>
+          <LinearGradient
+            colors={['#3D7DCA', '#0C4087']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.swipeContainer}
+          >
+            <Animated.Text style={[styles.swipeText, { opacity: textOpacity }]}>
+              {confirmed ? 'Accept Booking' : 'Slide to Pickup Complete'}
+            </Animated.Text>
+
+            <Animated.View
+              {...panResponder.panHandlers}
+              style={[
+                styles.thumb,
+                {
+                  transform: [
+                    { translateX: Animated.add(translateX, nudgeAnim) },
+                    { scale }
+                  ],
+                },
+              ]}
+            />
+          </LinearGradient>
+
+        </View>
 
       </SafeAreaView>
-    </ScrollView>
+    </ScrollView >
   );
 }
 
@@ -427,48 +484,29 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
+    backgroundColor: '#f2f1f1ff',
   },
-  swipeButtonContainer: {
-    marginHorizontal: 0, // or any number you want
-  },
-  title: {
-    fontSize: 20,
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-
   leftHeader: {
     flexDirection: 'column',
     flex: 1,
 
   },
-
-  // headerInfo: {
-  //     flex: 1,
-  //     marginLeft: width * 0.03,
-  // },
-  swipeText: {
-    color: '#0C4087',
-    fontWeight: 'bold',
-  },
   companyName: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.05,
     fontWeight: 'bold',
     marginTop: height * 0.01,
     marginLeft: width * 0.02,
   },
   address: {
-    fontSize: width * 0.035,
+    fontSize: width * 0.04,
     color: '#555',
     marginTop: 2,
     marginLeft: width * 0.02,
   },
   rating: {
-    fontSize: width * 0.035,
+    fontSize: width * 0.04,
     fontWeight: '500',
-    color: '#111',
+    color: 'green',
     marginTop: 4,
     marginLeft: width * 0.02,
   },
@@ -483,28 +521,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 
-  bookingTitle: {
-    fontSize: width * 0.05,
-    fontWeight: '600',
-    marginBottom: height * 0.017,
-
-    marginLeft: width * 0.02,
-  },
   sectionTitle: {
     fontSize: width * 0.05,
     fontWeight: '600',
-    marginBottom: height * 0.017,
+    marginBottom: height * 0.010,
 
     marginLeft: width * 0.02,
   },
-  messageTitle: {
-    fontSize: width * 0.038,
-    fontWeight: '600',
-    marginBottom: height * 0.017,
 
-    marginLeft: width * 0.02,
-  },
-  bookingCard: {
+  customerCard: {
     backgroundColor: '#fff',
     margin: width * 0.00,
     // borderRadius: 12,
@@ -512,124 +537,36 @@ const styles = StyleSheet.create({
     marginTop: 7,
 
   },
-  bookingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: height * 0.015,
-    marginLeft: width * 0.02,
-  },
-  icon: {
-    width: 22,
-    height: 22,
-    marginRight: 8,
-  },
-  dateText: {
-    fontSize: width * 0.039,
-    color: '#000',
-    fontWeight: '500',
-  },
-  addressRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: height * 0.012,
-    marginLeft: width * 0.02,
-    marginTop: height * 0.01,
-  },
-  addressText: {
-    fontSize: width * 0.035,
-    color: '#333',
-    flex: 1,
+  bookingCard: {
+    backgroundColor: '#fff',
+    margin: width * 0.00,
+    // borderRadius: 12,
+    padding: width * 0.04,
+    marginTop: 5,
 
   },
-  houseRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: height * 0.01,
-    marginLeft: width * 0.02,
-  },
-  houseType: {
-    fontSize: width * 0.04,
-    fontWeight: '500',
-    marginLeft: width * 0.01,
-  },
+
   viewBtn: {
     borderWidth: 1,
     borderColor: '#BA1C1C',
-    borderRadius: 5,
+    borderRadius: 10,
     paddingVertical: 6,
     paddingHorizontal: 12,
-    marginRight: width * 0.02,
+    height: 40,
+
   },
   viewBtnText: {
     color: '#BA1C1C',
     fontWeight: '600',
-    fontSize: width * 0.035,
-
+    fontSize: width * 0.042,
+    textAlign: 'center',
   },
 
-  form: {
-    paddingHorizontal: width * 0.04,
-    marginTop: height * 0.01,
-  },
-  input: {
-    backgroundColor: '#fff',
-    paddingVertical: height * 0.015,
-    paddingHorizontal: width * 0.04,
-    borderRadius: width * 0.02,
-    fontSize: width * 0.04,
-    color: '#000',
-    marginBottom: height * 0.012,
-  },
-  couponButton: {
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: height * 0.018,
-    height: height * 0.06,
-    marginTop: 7,
-    margin: width * 0.00,
-  },
-  couponLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-
-  },
-  couponIcon: {
-    width: 22,
-    height: 22,
-    marginRight: width * 0.05,
-    marginLeft: width * 0.05,
-
-  },
-  couponText: {
-    fontSize: width * 0.04,
-    fontWeight: '600',
-    color: '#000',
-
-  },
-  couponArrow: {
-    marginRight: width * 0.05,
-    fontSize: width * 0.04,
-    fontWeight: '900',
-    color: '#058103ff',
-  },
-  totalSaving: {
-    marginLeft: 25,
-    fontWeight: '600',
-    color: '#058103ff',
-  },
-  savedAmount: {
-    fontWeight: '900',
-    color: '#058103ff',
-    marginRight: width * 0.06,
-  },
   priceCard: {
     backgroundColor: '#fff',
     padding: width * 0.04,
     marginTop: 7,
-
+    marginHorizontal: 0,
 
   },
   priceRow: {
@@ -641,21 +578,7 @@ const styles = StyleSheet.create({
     marginTop: height * 0.01,
 
   },
-  priceLabel: {
-    fontSize: width * 0.038,
-    color: '#333',
 
-  },
-  priceValue: {
-    fontSize: width * 0.038,
-    fontWeight: '500',
-    color: '#000',
-  },
-  discountValue: {
-    fontSize: width * 0.038,
-    fontWeight: '500',
-    color: '#BA1C1C',
-  },
   divider: {
     height: 1,
     backgroundColor: '#ccc',
@@ -668,9 +591,9 @@ const styles = StyleSheet.create({
 
   },
   totalValue: {
-    fontSize: width * 0.045,
-    fontWeight: '700',
-    color: '#000',
+    fontSize: width * 0.055,
+    fontWeight: '900',
+    color: 'green',
 
   },
 
@@ -700,12 +623,14 @@ const styles = StyleSheet.create({
   },
 
   customerBox: {
+    width: 'auto',
+    borderRadius: 10,
+    marginTop: height * 0.01,
     backgroundColor: '#fff',
-
-
+    margin: width * 0.00,
+    // borderRadius: 12,
     padding: width * 0.04,
 
-    marginTop: height * 0.01,
   },
 
   customerTitle: {
@@ -715,25 +640,11 @@ const styles = StyleSheet.create({
     color: '#000',
   },
 
-  customerInput: {
-    backgroundColor: '#fff',
-    borderColor: '#ddd',
-    borderWidth: 1,
-    paddingVertical: height * 0.015,
-    paddingHorizontal: width * 0.04,
-    borderRadius: 4,
-    fontSize: width * 0.04,
-    color: '#000',
-    marginBottom: height * 0.015,
-  },
-
-
   timelineContainer: {
-    paddingHorizontal: 48,
+    borderRadius: 10,
+    padding: 12,
+    margin: 12,
 
-    paddingVertical: 16,
-    marginTop: 7,
-    backgroundColor: '#dae0f1ff',
   },
 
   timelineItem: {
@@ -777,28 +688,144 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-
-  cancelButton: {
-    backgroundColor: '#BA1C1C', // red-500
+  AcceptContainer: {
+    margin: 16,
+    flex: 1,
+    justifyContent: 'center',
   },
-
-  payButton: {
-    backgroundColor: '#16a34a', // green-600
+  card: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 12,
+    elevation: 1,
+    marginBottom: 20,
   },
-
-  cancelButtonText: {
-    color: '#fff',
+  title: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
+    marginBottom: 8,
   },
-
-  payButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
+  detail: {
+    fontSize: 14,
+    marginBottom: 4,
   },
   swipeContainer: {
-    marginVertical: 20,
-    paddingHorizontal: 10,
+    width: '100%',
+    height: THUMB_SIZE,
+    backgroundColor: '#34dc6f',
+    borderRadius: 100,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    alignSelf: 'center',
   },
+  swipeText: {
+    position: 'absolute',
+    alignSelf: 'center',
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 18,
+  },
+  thumb: {
+    width: THUMB_SIZE,
+    height: THUMB_SIZE,
+    borderRadius: THUMB_SIZE / 2,
+    backgroundColor: '#0C4087',
+    borderColor: '#ffffff',
+    borderWidth: 2,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    zIndex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  successIcon: {
+    alignSelf: 'center',
+  },
+  bookingId: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#0C4087',
+    marginBottom: 10,
+  },
+
+  customerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+
+  customerName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+
+  },
+
+  customerPhone: {
+    fontSize: 14,
+    color: '#555',
+  },
+
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+
+  locationLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginLeft: 6,
+    color: '#333',
+  },
+
+  locationText: {
+    fontSize: 13,
+    color: '#444',
+    flexShrink: 1,
+    marginLeft: 4,
+  },
+
+  detailsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+
+  dateText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+
+  typeText: {
+    fontSize: 14,
+    color: '#444',
+    fontWeight: '500',
+  },
+
+  paymentBox: {
+    alignItems: 'flex-end',
+  },
+
+  paymentStatus: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+
+  totalAmount: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'green',
+  },
+
 });

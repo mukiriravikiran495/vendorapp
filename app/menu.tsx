@@ -12,12 +12,15 @@ import {
   View,
 } from 'react-native';
 
+
 export default function Menu() {
   const router = useRouter();
+ 
 
   const menuItems = [
     { label: 'Dashboard', icon: <Ionicons name="grid" size={20} color="#fff" />, route: '/dashboard', active: true },
     { label: 'My Bookings', icon: <Ionicons name="cube-outline" size={20} color="#2e3a59" />, route: '/bookings' },
+    { label: 'Transactions', icon: <Ionicons name="cube-outline" size={20} color="#2e3a59" />, route: '/transactions' },
     { label: 'Profile', icon: <Feather name="user" size={20} color="#2e3a59" />, route: '/profile' },
     { label: 'Bank Account', icon: <FontAwesome name="bank" size={20} color="#2e3a59" />, route: '/bank' },
     { label: 'FAQ', icon: <Feather name="help-circle" size={20} color="#2e3a59" />, route: '/faq' },
@@ -33,7 +36,7 @@ export default function Menu() {
         </TouchableOpacity>
 
         <Text style={styles.logo}>Shiftyng vendor</Text>
-
+        
         {menuItems.map((item, index) => (
           <TouchableOpacity
             key={index}
@@ -85,7 +88,7 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 7,
     marginBottom: 10,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#fff',
   },
   activeMenuItem: {
     backgroundColor: '#0C4087',

@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import {
+    Dimensions,
     Platform,
     SafeAreaView,
     StatusBar,
@@ -11,34 +11,54 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { setOnlineStatus } from '../redux/slices/onlineSlice';
+import { RootState } from '../redux/store';
+const { width } = Dimensions.get('window');
+
 
 export default function bank() {
     const router = useRouter();
-    const [isOnline, setIsOnline] = useState(false);
 
+    const dispatch = useDispatch();
+    const isOnline = useSelector((state: RootState) => state.online.isOnline);
     return (
         <SafeAreaView style={styles.safeArea}>
             {/* Header with Back, Toggle, Notification */}
             <View style={styles.header}>
                 {/* Back */}
                 <TouchableOpacity onPress={() => router.back()}>
-                    <Ionicons name="arrow-back" size={24} color="#0B4ED3" />
+                    <Ionicons name="arrow-back" size={24} color="#000" />
                 </TouchableOpacity>
 
-                {/* Online/Offline Toggle */}
-                <View style={styles.toggleContainer}>
-                    <Text style={styles.statusText}>{isOnline ? 'Online' : 'Offline'}</Text>
+                <View style={[
+                    styles.toggleContainer,
+                    {
+                        backgroundColor: isOnline ? '#e3e4e6' : '#e6e6e6',
+                        borderColor: isOnline ? '#4bc373' : '#d6dce4ff',
+                        borderWidth: 0.8,
+                    }
+                ]}>
+                    <Text style={[
+                        styles.statusText,
+                        { color: isOnline ? '#4bc373' : '#555', fontWeight: '500' }
+                    ]}>
+                        {isOnline ? 'ON LINE' : 'OFF LINE'}
+                    </Text>
+
                     <Switch
                         value={isOnline}
-                        onValueChange={setIsOnline}
-                        trackColor={{ false: '#ccc', true: '#0B4ED3' }}
-                        thumbColor="#fff"
+                        onValueChange={(value) => {
+                            dispatch(setOnlineStatus(value)); // ✅ fixed
+                        }}
+                        trackColor={{ false: '#ccc', true: '#4bc373' }}
+                        thumbColor={isOnline ? '#4bc373' : '#e5eae7ff'}
                     />
                 </View>
 
                 {/* Notification */}
                 <TouchableOpacity onPress={() => { }} style={styles.notificationIcon}>
-                    <Ionicons name="notifications-outline" size={24} color="#0B4ED3" />
+                    <Ionicons name="notifications-outline" size={24} color="#000" />
                 </TouchableOpacity>
             </View>
 
@@ -68,18 +88,17 @@ const styles = StyleSheet.create({
     toggleContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#e6e6e6',
-        paddingHorizontal: 10,
+        backgroundColor: '#4bc373',
+        paddingHorizontal: 15,
         paddingVertical: 2,
-        borderRadius: 10,
-        height: 32,
+        borderRadius: 24,
+        height: 38,
 
     },
     statusText: {
         marginRight: 8,
-        fontSize: 16,
-        color: '#0B4ED3',
-        fontWeight: '500',
+        fontSize: width * 0.045,
+        color: '#555',
     },
     notificationIcon: {
         paddingLeft: 10,

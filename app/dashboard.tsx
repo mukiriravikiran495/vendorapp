@@ -1,3 +1,4 @@
+
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
@@ -13,6 +14,10 @@ import {
     View,
 } from 'react-native';
 import MapView from 'react-native-maps';
+import { useDispatch, useSelector } from 'react-redux';
+import { setOnlineStatus } from '../redux/slices/onlineSlice';
+import { RootState } from '../redux/store';
+
 
 const mapStyle = [
     { elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
@@ -34,6 +39,7 @@ type EarningsCardProps = {
     color: string;
 };
 
+
 const EarningsCard = ({ title, amount, subtitle, color }: EarningsCardProps) => (
     <View style={[styles.card, { borderColor: color + "30" }]}>
         <View style={styles.earningsheader}>
@@ -46,7 +52,8 @@ const EarningsCard = ({ title, amount, subtitle, color }: EarningsCardProps) => 
 );
 
 export default function Home() {
-    const [isOnline, setIsOnline] = useState(false);
+    const dispatch = useDispatch();
+    const isOnline = useSelector((state: RootState) => state.online.isOnline);
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [region, setRegion] = useState<{
         latitude: number;
@@ -85,7 +92,7 @@ export default function Home() {
             {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => router.push('/menu')}>
-                    <Ionicons name="menu" size={28} color="#0C4087" />
+                    <Ionicons name="menu" size={28} color="#000" />
                 </TouchableOpacity>
                 <View style={[
                     styles.toggleContainer,
@@ -97,19 +104,22 @@ export default function Home() {
                 ]}>
                     <Text style={[
                         styles.statusText,
-                        { color: isOnline ? '#4bc373' : '#555', fontWeight: 500, }
+                        { color: isOnline ? '#4bc373' : '#555', fontWeight: '500' }
                     ]}>
                         {isOnline ? 'ON LINE' : 'OFF LINE'}
                     </Text>
+
                     <Switch
                         value={isOnline}
-                        onValueChange={setIsOnline}
+                        onValueChange={(value) => {
+                            dispatch(setOnlineStatus(value)); // ✅ fixed
+                        }}
                         trackColor={{ false: '#ccc', true: '#4bc373' }}
                         thumbColor={isOnline ? '#4bc373' : '#e5eae7ff'}
                     />
                 </View>
                 <TouchableOpacity style={styles.notificationIcon}>
-                    <Ionicons name="notifications-outline" size={28} color="#0C4087" />
+                    <Ionicons name="notifications-outline" size={28} color="#000" />
                 </TouchableOpacity>
             </View>
 
@@ -117,18 +127,6 @@ export default function Home() {
             <View style={styles.mapContainer}>
                 {/* Dropdown Button */}
                 <View style={styles.earningsContainer}>
-                    {/* <TouchableOpacity
-                        style={styles.earningsHeader}
-                        onPress={() => setDropdownVisible(!dropdownVisible)}>
-                        <Text style={styles.earningsText}>Today’s Earnings</Text>
-                        <Text style={styles.earningsAmount}>₹27,800</Text>
-                        <Ionicons
-                            name={dropdownVisible ? 'chevron-up' : 'chevron-down'}
-                            size={20}
-                            color="#000"
-                            style={{ marginLeft: 8 }}
-                        />
-                    </TouchableOpacity> */}
 
                     <TouchableOpacity
                         style={styles.earningsHeader}
@@ -146,20 +144,6 @@ export default function Home() {
                         <View style={styles.innerShadow} pointerEvents="none" />
                     </TouchableOpacity>
 
-                    {/* Dropdown Cards (absolute position over map) */}
-                    {/* {dropdownVisible && (
-                        <View style={styles.dropdownOverlay}>
-                            <ScrollView
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={styles.scrollContainer}
-                            >
-                                <EarningsCard title="My Earnings" amount="₹1,24,500" subtitle="+12% from last month" color="#0C4087" />
-                                <EarningsCard title="My Balance" amount="₹-354" subtitle="Recharge your Wallet" color="#BA1C1C" />
-                                <EarningsCard title="Today Earnings" amount="₹27,800" subtitle="January 2024" color="#0C4087" />
-                            </ScrollView>
-                        </View>
-                    )} */}
                     {dropdownVisible && (
                         <View style={styles.dropdownOverlay}>
                             <ScrollView
@@ -208,22 +192,7 @@ export default function Home() {
 
                 )}
             </View>
-            <View style={styles.recentOrdersContainer}>
-                <Text style={styles.recentOrdersTitle}>Recent Orders</Text>
 
-                {/* Example order cards */}
-                {[1, 2, 3].map((item) => (
-                    <View key={item} style={styles.orderCard}>
-                        <Text style={styles.orderTitle}>Order #{item}</Text>
-                        <Text style={styles.orderDetail}>Pickup: Banjara Hills</Text>
-                        <Text style={styles.orderDetail}>Drop: Jubilee Hills</Text>
-                        <Text style={styles.orderDetail}>Amount: ₹1500</Text>
-                    </View>
-                ))}
-            </View>
-
-
-            {/* Extra space after last order */}
             <View style={{ height: 100 }} />
         </ScrollView >
     );
@@ -247,7 +216,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#4bc373',
-        paddingHorizontal: 5,
+        paddingHorizontal: 12,
         paddingVertical: 2,
         borderRadius: 24,
         height: 38,
@@ -272,8 +241,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
         height: 60,
-       backgroundColor: '#e6f0ff',
-        
+        backgroundColor: '#e6f0ff',
+
         position: 'relative',
         overflow: 'hidden', // important for inner shadow
     },
@@ -335,13 +304,13 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     centeredImage: {
-        width: width * 0.8,
+        width: width * 1,
         height: width * 0.8,
-        backgroundColor: '#eee',
+        backgroundColor: '#fff',
         justifyContent: 'center',
     },
     card: {
-        width: width * 0.6,
+        width: width * 0.5,
         padding: 16,
         marginRight: 12,
         borderRadius: 16,
@@ -349,6 +318,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         height: 150,
         justifyContent: "space-between",
+
     },
     earningsheader: {
         flexDirection: 'row',
@@ -374,40 +344,4 @@ const styles = StyleSheet.create({
         fontSize: width * 0.04,
         color: "#666",
     },
-    recentOrdersContainer: {
-        padding: 16,
-        backgroundColor: '#fff',
-        flexGrow: 1,
-    },
-
-    recentOrdersTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        color: '#0C4087',
-    },
-
-    orderCard: {
-        backgroundColor: '#f2f2f2',
-        padding: 12,
-        borderRadius: 10,
-        marginBottom: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-        elevation: 2,
-    },
-
-    orderTitle: {
-        fontSize: 16,
-        fontWeight: '600',
-        marginBottom: 4,
-    },
-
-    orderDetail: {
-        fontSize: 14,
-        color: '#333',
-    },
-
 });
