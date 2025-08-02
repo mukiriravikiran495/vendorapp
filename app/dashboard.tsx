@@ -151,24 +151,37 @@ export default function Home() {
                                 showsHorizontalScrollIndicator={false}
                                 contentContainerStyle={styles.dropdownScrollContainer}
                             >
+                                <TouchableOpacity
+                                    onPress={() => router.push('/myearnings')}
+                                    activeOpacity={0.8}
+                                >
                                 <EarningsCard
                                     title="My Earnings"
                                     amount="₹1,24,500"
                                     subtitle="+12% from last month"
                                     color="#0C4087"
-                                />
-                                <EarningsCard
-                                    title="My Balance"
-                                    amount="₹-354"
-                                    subtitle="Recharge your Wallet"
-                                    color="#BA1C1C"
-                                />
+                                /></TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => router.push('/rechargewallet')}
+                                    activeOpacity={0.8}
+                                >
+                                    <EarningsCard
+                                        title="Wallet Balance"
+                                        amount="₹-354"
+                                        subtitle="Recharge your Wallet"
+                                        color="#BA1C1C"
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => router.push('/myearnings')}
+                                    activeOpacity={0.8}
+                                >
                                 <EarningsCard
                                     title="Today Earnings"
                                     amount="₹27,800"
                                     subtitle="January 2024"
                                     color="#0C4087"
-                                />
+                                /></TouchableOpacity>
                             </ScrollView>
                         </View>
                     )}

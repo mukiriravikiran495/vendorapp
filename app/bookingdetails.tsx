@@ -203,6 +203,7 @@ export default function BookingDetails() {
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={26} color="#000" />
+            <Text style={styles.headerTitle}>Booking Details</Text>
           </TouchableOpacity>
         </View>
 
@@ -598,14 +599,21 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    padding: width * 0.04,
+    padding: 16,
     backgroundColor: '#fff',
+    elevation: 4,
   },
-
   backButton: {
-    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 8, // space between icon and text
+    color: '#000',
+    paddingHorizontal: 12,
+  },
   companyRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
