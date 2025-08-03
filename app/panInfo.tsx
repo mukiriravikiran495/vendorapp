@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 const { width } = Dimensions.get('window');
 
-export default function faq() {
+export default function panInfo() {
     const router = useRouter();
 
     const dispatch = useDispatch();
@@ -27,19 +27,29 @@ export default function faq() {
                 {/* Back */}
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
                     <Ionicons name="arrow-back" size={26} color="#000" />
-                    <Text style={styles.headerTitle}>FAQ</Text>
+                    <Text style={styles.headerTitle}>Pan card</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.push('/support')} style={styles.supportButton}>
                     <Ionicons name="headset-outline" size={20} color="#000" style={{ marginRight: 6 }} />
                     <Text style={styles.supportText}>Support</Text>
                 </TouchableOpacity>
             </View>
-
-            {/* Main Content */}
-            <View style={styles.content}>
-                <Text style={styles.heading}>My FAQ</Text>
-                <Text style={styles.subtext}>You currently have no bookings.</Text>
+            <View style={styles.cardContainer}>
+                <View style={styles.verificationBox}>
+                    <Ionicons name="checkmark-circle" size={32} color="#2ecc71" />
+                    <Text style={styles.verifiedText}>Your PAN Card is verified</Text>
+                    <View style={styles.aadharBox}>
+                        <View style={styles.blueStrip} />
+                        <Text style={styles.aadharNumber}>CUBPM7914E</Text>
+                    </View>
+                    <Text style={styles.verifiedOn}>Verified on</Text>
+                    <TouchableOpacity style={styles.viewButton}>
+                        <Text style={styles.viewButtonText}>View PAN Card</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
+
+
         </SafeAreaView>
     );
 }
@@ -116,4 +126,71 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    cardContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        marginTop: 30,
+    },
+    verificationBox: {
+        width: '100%',
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 20,
+        alignItems: 'center',
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        borderWidth: 1,
+        borderColor: '#eee',
+    },
+    verifiedText: {
+        marginTop: 10,
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#333',
+    },
+    aadharBox: {
+        marginTop: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#f5f5f5',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+    },
+    blueStrip: {
+        width: 8,
+        height: '100%',
+        backgroundColor: '#1e63ff',
+        marginRight: 12,
+        borderRadius: 2,
+    },
+    aadharNumber: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        letterSpacing: 1,
+    },
+    verifiedOn: {
+        color: 'green',
+        fontSize: 14,
+        marginTop: 12,
+    },
+    viewButton: {
+        marginTop: 16,
+        backgroundColor: '#e8f0fe',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 8,
+    },
+    viewButtonText: {
+        color: '#1a73e8',
+        fontSize: 16,
+        fontWeight: '500',
+    },
+
 });

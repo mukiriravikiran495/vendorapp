@@ -1,14 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import {
     Dimensions,
     Image,
+    Modal,
     Platform,
     SafeAreaView,
     ScrollView,
     StatusBar,
     StyleSheet,
     Text,
+    TextInput,
     TouchableOpacity,
     View
 } from 'react-native';
@@ -21,6 +24,10 @@ export default function rechargewallet() {
     const router = useRouter();
     const dispatch = useDispatch();
     const isOnline = useSelector((state: RootState) => state.online.isOnline);
+    const [showRechargeModal, setShowRechargeModal] = useState(false);
+    const [amount, setAmount] = useState('342');
+
+
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -38,7 +45,7 @@ export default function rechargewallet() {
 
             <ScrollView showsVerticalScrollIndicator={false}>
                 {/* Wallet Balance Card */}
-                <TouchableOpacity style={styles.walletCard} onPress={() => router.push('/recharge')}>
+                <TouchableOpacity style={styles.walletCard} activeOpacity={0.9}  onPress={() => setShowRechargeModal(true)}>
                     <View style={styles.cardInner}>
                         <Text style={styles.balanceText}>₹-342.9</Text>
                         <Text style={styles.balanceSubText}>Your balance is low. Please recharge</Text>
@@ -80,6 +87,53 @@ export default function rechargewallet() {
 
                     {/* You can add FlatList here for actual transaction items */}
                 </View>
+
+                <Modal
+                    transparent
+                    animationType="fade"
+                    visible={showRechargeModal}
+                    onRequestClose={() => setShowRechargeModal(false)}
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalContainer}>
+                            <Text style={styles.modalTitle}>Recharge Amount</Text>
+
+                            <TextInput
+                                style={styles.input}
+                                value={amount}
+                                onChangeText={setAmount}
+                                keyboardType="numeric"
+                            />
+
+                            <View style={styles.quickAmountContainer}>
+                                {[342, 500, 1000].map((val) => (
+                                    <TouchableOpacity
+                                        key={val}
+                                        style={[
+                                            styles.quickButton,
+                                            amount === String(val) && styles.quickButtonSelected
+                                        ]}
+                                        onPress={() => setAmount(String(val))}
+                                    >
+                                        <Text style={{ fontWeight: '500' }}>{val}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+
+                            <TouchableOpacity
+                                style={styles.rechargeBtn}
+                                onPress={() => {
+                                    setShowRechargeModal(false);
+                                    // You can trigger API call here
+                                }}
+                            >
+                                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Recharge Wallet</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+
+
             </ScrollView>
         </SafeAreaView>
     );
@@ -238,5 +292,53 @@ const styles = StyleSheet.create({
     },
     cardInner: {
         paddingHorizontal: 20, // for content only
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContainer: {
+        backgroundColor: '#fff',
+        width: 340,
+        borderRadius: 20,
+        padding: 20,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 16,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10,
+        padding: 10,
+        fontSize: 18,
+        marginBottom: 16,
+    },
+    quickAmountContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        marginBottom: 16,
+        columnGap: 10,
+    },
+    quickButton: {
+        paddingHorizontal: 18,
+        paddingVertical: 10,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+    },
+    rechargeBtn: {
+        backgroundColor: '#0a3d91',
+        paddingVertical: 14,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    quickButtonSelected: {
+        backgroundColor: '#e0e0e0', // light gray
     },
 });

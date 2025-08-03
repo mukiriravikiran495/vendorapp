@@ -7,13 +7,11 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Switch,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { setOnlineStatus } from '../redux/slices/onlineSlice';
 import { RootState } from '../redux/store';
 const { width } = Dimensions.get('window');
 
@@ -43,34 +41,9 @@ export default function Menu() {
             <Ionicons name="arrow-back" size={24} color="#000" />
           </TouchableOpacity>
 
-          {/* Online/Offline Toggle */}
-          <View style={[styles.toggleContainer,
-          {
-            backgroundColor: isOnline ? '#e3e4e6' : '#e6e6e6',
-            borderColor: isOnline ? '#4bc373' : '#d6dce4ff',
-            borderWidth: 0.8,
-          }
-          ]}>
-            <Text style={[
-              styles.statusText,
-              { color: isOnline ? '#4bc373' : '#555', fontWeight: '500' }
-            ]}>
-              {isOnline ? 'ON LINE' : 'OFF LINE'}
-            </Text>
-
-            <Switch
-              value={isOnline}
-              onValueChange={(value) => {
-                dispatch(setOnlineStatus(value)); // ✅ fixed
-              }}
-              trackColor={{ false: '#ccc', true: '#4bc373' }}
-              thumbColor={isOnline ? '#4bc373' : '#e5eae7ff'}
-            />
-          </View>
-
-          {/* Notification */}
-          <TouchableOpacity onPress={() => { }} style={styles.notificationIcon}>
-            <Ionicons name="notifications-outline" size={24} color="#000" />
+          <TouchableOpacity onPress={() => router.push('/support')} style={styles.supportButton}>
+            <Ionicons name="headset-outline" size={20} color="#000" style={{ marginRight: 6 }} />
+            <Text style={styles.supportText}>Support</Text>
           </TouchableOpacity>
         </View>
 
@@ -291,22 +264,18 @@ const styles = StyleSheet.create({
     color: '#000',
     paddingHorizontal: 12,
   },
-  toggleContainer: {
+  
+  supportButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4bc373',
-    paddingHorizontal: 12,
-    paddingVertical: 2,
-    borderRadius: 24,
-    height: 38,
-
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 8,
   },
-  statusText: {
-    marginRight: 8,
-    fontSize: width * 0.045,
-    color: '#555',
-  },
-  notificationIcon: {
-    paddingLeft: 10,
+  supportText: {
+    fontSize: 15,
+    color: '#000',
+    fontWeight: '500',
   },
 });

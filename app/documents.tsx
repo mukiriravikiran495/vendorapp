@@ -13,8 +13,14 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 const { width } = Dimensions.get('window');
+const menuItems: { label: string; icon: keyof typeof Ionicons.glyphMap; danger?: boolean; route?: string; }[] = [
+    { label: 'PAN', icon: 'document-text-outline', route: '/panInfo' },
+    { label: 'Aadhar', icon: 'document-text-outline', route: '/aadharInfo' },
+    { label: 'GST', icon: 'document-text-outline', route: '/gstInfo' },
+    { label: 'License', icon: 'document-text-outline', route: '/licenseInfo' },
 
-export default function faq() {
+];
+export default function documents() {
     const router = useRouter();
 
     const dispatch = useDispatch();
@@ -27,19 +33,30 @@ export default function faq() {
                 {/* Back */}
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
                     <Ionicons name="arrow-back" size={26} color="#000" />
-                    <Text style={styles.headerTitle}>FAQ</Text>
+                    <Text style={styles.headerTitle}>Documents</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.push('/support')} style={styles.supportButton}>
                     <Ionicons name="headset-outline" size={20} color="#000" style={{ marginRight: 6 }} />
                     <Text style={styles.supportText}>Support</Text>
                 </TouchableOpacity>
             </View>
-
-            {/* Main Content */}
-            <View style={styles.content}>
-                <Text style={styles.heading}>My FAQ</Text>
-                <Text style={styles.subtext}>You currently have no bookings.</Text>
+            <View style={styles.menuContainer}>
+                {menuItems.map((item, index) => (
+                    <TouchableOpacity
+                        key={index}
+                        style={styles.menuItem}
+                        onPress={() => item.route && router.push(item.route as any)}
+                    >
+                        <View style={styles.menuLeft}>
+                            <Ionicons name={item.icon} size={20} color="#0B4ED3" style={{ marginRight: 10 }} />
+                            <Text style={styles.menuLabel}>{item.label}</Text>
+                        </View>
+                        <Ionicons name="chevron-forward" size={20} color="#000" />
+                    </TouchableOpacity>
+                ))}
             </View>
+
+
         </SafeAreaView>
     );
 }
@@ -58,39 +75,11 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 20,
     },
-    toggleContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#4bc373',
-        paddingHorizontal: 12,
-        paddingVertical: 2,
-        borderRadius: 24,
-        height: 38,
 
-    },
-    statusText: {
-        marginRight: 8,
-        fontSize: width * 0.045,
-        color: '#555',
-    },
-    notificationIcon: {
-        paddingLeft: 10,
-    },
     content: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    heading: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#0B4ED3',
-        marginBottom: 10,
-    },
-    subtext: {
-        fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
     },
     supportButton: {
         flexDirection: 'row',
@@ -116,4 +105,28 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    menuContainer: {
+        marginTop: 10,
+    },
+    menuItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between', // <-- this spreads left and right
+        backgroundColor: '#f5f5f5',
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 10,
+        marginBottom: 12,
+        height: 50,
+    },
+    menuLabel: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#333',
+    },
+    menuLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
 });

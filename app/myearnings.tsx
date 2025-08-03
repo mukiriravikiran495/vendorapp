@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { addDays, format, isSameDay, subDays } from 'date-fns';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -14,7 +15,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 const { width } = Dimensions.get('window');
-
 
 const orders = [
     {
@@ -62,10 +62,21 @@ const orders = [
 
 export default function myearnings() {
     const router = useRouter();
-
+    const [baseDate, setBaseDate] = useState(new Date());
     const dispatch = useDispatch();
     const isOnline = useSelector((state: RootState) => state.online.isOnline);
     const [selectedFilter, setSelectedFilter] = useState('Completed');
+    const getDateObjects = (base: Date) => {
+        return [0, 1, 2].map(offset => {
+            const date = addDays(base, offset);
+            return {
+                date,
+                label: format(date, 'EEE d'),
+                isToday: isSameDay(date, new Date()),
+            };
+        });
+    };
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.header}>
@@ -86,15 +97,29 @@ export default function myearnings() {
             </View>
 
             <View style={styles.dateSelector}>
-                <TouchableOpacity style={styles.arrowButton}>
+                <TouchableOpacity
+                    style={styles.arrowButton}
+                    onPress={() => setBaseDate(prev => subDays(prev, 1))}
+                >
                     <Ionicons name="chevron-back" size={20} color="#000" />
                 </TouchableOpacity>
-                {['Fri 1', 'Sat 2', 'Sun 3'].map((d, i) => (
-                    <View key={i} style={styles.dateBox}>
-                        <Text style={styles.dateText}>{d}</Text>
+
+                {getDateObjects(baseDate).map(({ date, label, isToday }, i) => (
+                    <View
+                        key={i}
+                        style={[
+                            styles.dateBox,
+                            isToday && styles.todayDateBox
+                        ]}
+                    >
+                        <Text style={styles.dateText}>{label}</Text>
                     </View>
                 ))}
-                <TouchableOpacity style={styles.arrowButton}>
+
+                <TouchableOpacity
+                    style={styles.arrowButton}
+                    onPress={() => setBaseDate(prev => addDays(prev, 1))}
+                >
                     <Ionicons name="chevron-forward" size={20} color="#000" />
                 </TouchableOpacity>
             </View>
@@ -141,9 +166,9 @@ export default function myearnings() {
                             <View style={styles.orderCircle} />
                             <View>
                                 <Text style={styles.orderName}>{order.name}</Text>
-                                
+
                                 <Text style={styles.orderDate}>{order.type}</Text>
-                                
+
                             </View>
                         </View>
                         <Text style={styles.orderAmount}>₹{order.amount}</Text>
@@ -229,6 +254,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 16,
         elevation: 2,
+
+        gap: 10,
     },
     arrowButton: {
         padding: 8,
@@ -291,6 +318,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 12,
         gap: 10, // reduce spacing between buttons
+    },
+    todayDateBox: {
+        backgroundColor: '#E6EEF8',
+        borderColor: '#0C4087',
+        borderWidth: 1,
     },
     filterButton: {
         paddingHorizontal: 10, // reduced from 16
