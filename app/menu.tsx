@@ -28,7 +28,7 @@ export default function Menu() {
     // { label: 'Profile', icon: <Feather name="user" size={20} color="#2e3a59" />, route: '/profile' },
     { label: 'Bank Account', icon: <FontAwesome name="bank" size={20} color="#2e3a59" />, route: '/bank' },
     { label: 'FAQ', icon: <Feather name="help-circle" size={20} color="#2e3a59" />, route: '/faq' },
-    { label: 'Contact Us', icon: <Feather name="phone" size={20} color="#2e3a59" />, route: '/contact' },
+    { label: 'Help', icon: <Feather name="phone" size={20} color="#2e3a59" />, route: '/help' },
   ];
 
   return (

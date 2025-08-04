@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import {
     Dimensions,
     Platform,
@@ -8,6 +7,7 @@ import {
     StatusBar,
     StyleSheet,
     Text,
+    TextInput,
     TouchableOpacity,
     View
 } from 'react-native';
@@ -15,39 +15,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 const { width } = Dimensions.get('window');
 
-export default function faq() {
+export default function help() {
     const router = useRouter();
 
     const dispatch = useDispatch();
     const isOnline = useSelector((state: RootState) => state.online.isOnline);
-    const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-    const faqList = [
-        {
-            question: 'Learn more about your earnings',
-            answer: 'You can view your earnings summary in the earnings section of the app, updated daily.'
-        },
-        {
-            question: 'I have an issue with an order earning.',
-            answer: 'Please contact support with your order ID. We will review and resolve your issue quickly.'
-        },
-        {
-            question: 'Route/location related issues',
-            answer: 'Ensure location services are enabled. If issues persist, try restarting your device.'
-        },
-        {
-            question: 'How can I transfer my earnings to my bank account?',
-            answer: 'Go to "Bank Details" in your profile, add your account, and click on "Transfer Earnings".'
-        },
-        {
-            question: 'I am facing an issue with transferring my earnings to my bank account.',
-            answer: 'Check if your bank details are correct. If the issue continues, contact support.'
-        }
-    ];
-
-    const toggleAnswer = (index: number) => {
-        setActiveIndex(prev => (prev === index ? null : index));
-    };
     return (
         <SafeAreaView style={styles.safeArea}>
             {/* Header with Back, Toggle, Notification */}
@@ -55,25 +28,25 @@ export default function faq() {
                 {/* Back */}
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
                     <Ionicons name="arrow-back" size={26} color="#000" />
-                    <Text style={styles.headerTitle}>FAQ</Text>
+                    <Text style={styles.headerTitle}>Help</Text>
                 </TouchableOpacity>
             </View>
-            {/* FAQ List */}
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Earnings and Wallet</Text>
-                {faqList.map((item, index) => (
-                    <View key={index}>
-                        <TouchableOpacity
-                            style={styles.item}
-                            onPress={() => toggleAnswer(index)}
-                        >
-                            <Text style={styles.itemText}>{item.question}</Text>
-                        </TouchableOpacity>
-                        {activeIndex === index && (
-                            <Text style={styles.answerText}>{item.answer}</Text>
-                        )}
-                    </View>
-                ))}
+            <View style={styles.searchBar}>
+                <Ionicons name="search" size={18} color="#000" style={styles.searchIcon} />
+                <TextInput
+                    placeholder="Search your issue"
+                    placeholderTextColor="#555"
+                    style={styles.searchInput}
+                />
+            </View>
+            <View style={styles.helpCard}>
+                <View style={{ flex: 1 }}>
+                    <Text style={styles.helpTitle}>Need Help?</Text>
+                    <Text style={styles.helpSubtitle}>Chat with support team</Text>
+                </View>
+                <TouchableOpacity style={styles.chatButton} onPress={() => router.push('/chatbox')} >
+                    <Text style={styles.chatButtonText}>Chat with us</Text>
+                </TouchableOpacity>
             </View>
 
         </SafeAreaView>
@@ -152,35 +125,93 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    section: {
-        backgroundColor: '#fff',
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#f1f1f1',
         borderRadius: 8,
         paddingVertical: 10,
+        paddingHorizontal: 12,
+        marginBottom: 20,
+    },
+    searchPlaceholder: {
+        fontSize: 15,
+        color: '#777',
+    },
+    searchBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10, // Optional: Make it more pill-like
+        paddingHorizontal: 14,
+        paddingVertical: 6,
+        marginBottom: 20,
+
+        // Shadow for iOS
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+
+        // Elevation for Android
+        elevation: 1,
+        backgroundColor: '#fff', // Needed for shadow visibility
     },
 
-    sectionTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        color: '#000',
+
+    searchIcon: {
+        marginRight: 10,
     },
 
-    item: {
-        paddingVertical: 14,
-        borderBottomWidth: 1,
-        borderBottomColor: '#e0e0e0',
-    },
-
-    itemText: {
+    searchInput: {
+        flex: 1,
         fontSize: 15,
         color: '#000',
     },
+    helpCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        padding: 16,
+        backgroundColor: '#fff',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 2,
+        marginBottom: 20,
+    },
 
-    answerText: {
+    helpTitle: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#000',
+        marginBottom: 4,
+    },
+
+    helpSubtitle: {
         fontSize: 14,
         color: '#555',
-        marginHorizontal: 10,
-        marginBottom: 10,
+    },
+
+    chatButton: {
+        backgroundColor: '#0B3E87',
+        paddingVertical: 10,
+        paddingHorizontal: 14,
+        borderRadius: 8,
+    },
+
+    chatButtonText: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: '500',
     },
 
 });
